@@ -1,6 +1,7 @@
 (() => {
   function copyToClipboard(text) {
-    window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+	  //window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+	  alert(text);
   }
 
   function jsDate2bibTex(date) {
@@ -32,18 +33,20 @@
   const today = new Date();
   const urldate = jsDate2bibTex(today);
 
-  const date = jsDate2bibTex(new Date(document.lastModified));
+  let modDate = new Date(document.lastModified);
+  const date = jsDate2bibTex(modDate);
 
   // remove special characters for citation key:
   let title_key = title.replace(/[^0-9a-z]/gi, "");
 
   // create citation key:
-  const citationKey = `${title_key}-${date}`;
+  let dateYear = modDate.getFullYear();
+  const citationKey = `${title_key}${dateYear}`;
 
-  const type = "@Online";
-  const filename = `:./references/${window.location.pathname
-    .slice(1)
-    .replace(/\//g, "-")}.html:html`;
+  const type = "@online";
+  //const filename = `:./references/${window.location.pathname
+  //  .slice(1)
+  //  .replace(/\//g, "-")}.html:html`;
 
   // Replace german umlauts with latex commands:
   let title_tex = title
@@ -56,13 +59,21 @@
     .replace(/\u00DF/g, '\\"s');
 
   // generate BiBTeX entry:
-  const bibTexEntry = `${type} {${citationKey},\r\
-\ \ title = {${title_tex}},\r\
-\ \ date = {${date}},\r\
-${author ? `\ \ author = {${author}},\r` : ""}\
-\ \ file = {${filename}},\r\
-\ \ url = {${url}},\r\
-\ \ urldate = {${urldate}}\r\
+//   const bibTexEntry = `${type} {${citationKey},\r\
+// \ \ title = {${title_tex}},\r\
+// \ \ date = {${date}},\r\
+// ${author ? `\ \ author = {${author}},\r` : ""}\
+// \ \ file = {${filename}},\r\
+// \ \ url = {${url}},\r\
+// \ \ urldate = {${urldate}}\r\
+// }`;
+
+  const bibTexEntry = `${type}{${citationKey},\n\
+\ttitle = {${title_tex}},\n\
+\tdate = {${date}},\n\
+${author ? `\tauthor = {${author}},\n` : ""}\
+\turl = {${url}},\n\
+\turldate = {${urldate}}\n\
 }`;
 
   copyToClipboard(bibTexEntry);
